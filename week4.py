@@ -8,21 +8,21 @@ sc = spark.sparkContext
 # Word list
 words = ["apple", "banana", "cherry", "date", "elderberry", "fig", "grape", "honeydew"]
 
-# Generate sentences on the driver
+# Generate sentences
 num_sentences = 1000
 sentences = [
     " ".join(random.sample(words, random.randint(1, 6))) + "."
     for _ in range(num_sentences)
 ]
 
-# Parallelize into RDD
+# Parallelize into an RDD
 sentences_rdd = sc.parallelize(sentences)
 
-# Transformation
+# Convert each sentence to uppercase
 transformed = sentences_rdd.map(lambda s: s.upper())
 
-# Print first 100 results
-for line in transformed.take(100):
-    print(line)
+# Save to HDFS
+output_path = "hdfs:///tmp/week4_output"
+transformed.saveAsTextFile(output_path)
 
 spark.stop()
